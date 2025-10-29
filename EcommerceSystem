@@ -10,4 +10,102 @@ public class EcommerceSystem {
 		orders = new LinkedList<>();
 		reviews = new LinkedList<>();
 	}
+    // getters for the linked lists
+    public LinkedList<Product> getProducts(){
+        return products;
+    }
+
+     public LinkedList<Customer> getCustomers(){
+        return customers;
+    }
+
+    public LinkedList<Order> getOrders(){
+        return orders;
+    }
+
+    public LinkedList<Review> getReviews(){
+        return reviews;
+    }
+
+    public void loadData(){
+
+    }
+
+    public getAverageRating(int productId){
+
+    }
+
+    public LinkedList<Product> trackOutOfStockProducts(){
+
+    }
+
+    public LinkedList<Review> extractReviewsFromCustomer(int customerId){
+
+    LinkedList<Review> customerReviews = new LinkedList<Review>(); //empty list to store reviews for a specific customer
+
+    if(!reviews.empty()){
+        reviews.findFirst();
+        while(!reviews.last()){
+            Review review = reviews.retrieve();
+            if(review.getCustomer().getCustomerId() == customerId)
+            customerReviews.insert(review);
+            reviews.findNext();
+        }
+        //check the last element
+         Review review = reviews.retrieve();
+        if(review.getCustomer().getCustomerId() == customerId)
+            customerReviews.insert(review);
+    }
+    return customerReviews;
+    } 
+
+
+    public LinkedList<Product> suggestTop3Products(){
+
+    }
+
+    public LinkedList<Order> getAllOrdersBetweenDates(String startDate , String endDate){
+
+    }
+
+    public LinkedList<Product> getCommonHighlyRatedProducts(int custId1 , int custId2){
+
+    }
+
+    public void addProduct(Product product){
+        
+    }
+
+    public boolean removeProduct(int productId){
+        
+    }
+
+
+    public void updateProduct(int productId , String name , double price , int stock){
+        
+    }
+
+    public Customer registerCustomer(int productId , String name , String email){
+        
+    }
+
+    public Order createOrder(int orderId , int customerId , LinkedList<Product> products , String orderDate){
+        
+    }
+
+     public void cancelOrder(int orderId){
+        
+    }
+
+    public void updateOrderStatus(int orderId , String newStatus){
+
+    }
+
+    public Review addReview(int reviewId , int productId , int customerId , int rating , String comment){
+
+    }
+
+    public void editReview(int reviewId , int rating , String comment){
+
+    }
 }
