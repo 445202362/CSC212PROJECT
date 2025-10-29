@@ -1,1 +1,13 @@
+public class EcommerceSystem {
+	private LinkedList<Product> products;
+	private LinkedList<Customer> customers;
+	private LinkedList<Order> orders;
+	private LinkedList<Review> reviews;
 
+	public EcommerceSystem() {
+		products = new LinkedList<>();
+		customers = new LinkedList<>();
+		orders = new LinkedList<>();
+		reviews = new LinkedList<>();
+	}
+}
