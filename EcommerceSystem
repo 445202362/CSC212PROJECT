@@ -326,11 +326,17 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
     }
 
     public Order createOrder(int orderId , int customerId , LinkedList<Product> products , String orderDate){
-        
+    
+
     }
 
      public void cancelOrder(int orderId){
-        
+        for (Order o : orders) {
+            if (o.getOrderId() == orderId) {
+                o.setStatus("Cancelled");
+                break;
+            }
+        }
     }
 
     public void updateOrderStatus(int orderId , String newStatus){
