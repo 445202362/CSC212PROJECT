@@ -326,10 +326,45 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
     }
 
     public Order createOrder(int orderId , int customerId , LinkedList<Product> products , String orderDate){
-    
-
+    public Order createOrder(int orderId, int customerId, LinkedList<Product> products, String orderDate) {
+    Customer customer = null;
+    customers.findFirst();
+    while (!customers.last()) {
+        Customer c = customers.retrieve();
+        if (c.getCustomerId() == customerId) {
+            customer = c;
+            break;
+        }
+        customers.findNext();
+    }
+    if (customer == null && !customers.empty() && customers.retrieve().getCustomerId() == customerId) {
+        customer = customers.retrieve();
     }
 
+    if (customer == null) {
+        System.out.println("Customer not found.");
+        return null;
+    }
+
+    double totalPrice = 0;
+    if (!products.empty()) {
+        products.findFirst();
+        while (!products.last()) {
+            totalPrice += products.retrieve().getPrice();
+            products.findNext();
+        }
+        totalPrice += products.retrieve().getPrice(); 
+    }
+
+
+    Order newOrder = new Order(orderId, customer, products, totalPrice, orderDate, "Pending");
+
+    orders.insert(newOrder);
+
+    return newOrder;
+}
+    }
+//end of method creat order
      public void cancelOrder(int orderId){
         for (Order o : orders) {
             if (o.getOrderId() == orderId) {
