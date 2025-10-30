@@ -626,13 +626,38 @@ public class EcommerceSystem {
     return (order.getOrderId() == orderId) ? order : null;
 }
 
+  
 
 
 
-// (20) Orders between 2 dates
-    public LinkedList<Order> getAllOrdersBetweenDates(String startDate , String endDate){
-
+// (20) Get all orders between two dates
+      public LinkedList<Order> getAllOrdersBetweenDates(String startDate, String endDate) {
+      LinkedList<Order> ordersInRange = new LinkedList<>();
+    
+          if (orders.empty()) {
+            return ordersInRange;
+        }
+    
+         orders.findFirst();
+         while (!orders.last()) {
+         Order order = orders.retrieve();
+         String orderDate = order.getOrderDate();
+        
+        if (orderDate.compareTo(startDate) >= 0 && orderDate.compareTo(endDate) <= 0) {
+            ordersInRange.insert(order);
+        }
+        orders.findNext();
     }
+    
+    // Check last order
+    Order lastOrder = orders.retrieve();
+    if (lastOrder.getOrderDate().compareTo(startDate) >= 0 && 
+        lastOrder.getOrderDate().compareTo(endDate) <= 0) {
+        ordersInRange.insert(lastOrder);
+    }
+    
+    return ordersInRange;
+}
 																	
 																										//==END OF ORDER OPERATIONS==
 
