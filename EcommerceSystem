@@ -340,6 +340,11 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
     }
 
     public void updateOrderStatus(int orderId , String newStatus){
-
+ for (Order o : orders) {
+            if (o.getOrderId() == orderId) {
+                o.setStatus(newStatus);
+                break;
+            }
+        }
     }
 }
