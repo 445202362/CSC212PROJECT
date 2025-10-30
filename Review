@@ -1,10 +1,10 @@
 public class Review{
 
-    private int reviewId;
+    int reviewId;
     private Product product;
     private Customer customer;
-    private int rating;
-    private String comment;
+    int rating;
+    String comment;
 
     public Review(int reviewId,Product product,Customer customer,int rating,String comment){
 
