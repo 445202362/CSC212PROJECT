@@ -27,18 +27,6 @@ public class EcommerceSystem {
         return reviews;
     }
 
-    public void loadData(){
-
-    }
-
-    public getAverageRating(int productId){
-
-    }
-
-    public LinkedList<Product> trackOutOfStockProducts(){
-
-    }
-
     public LinkedList<Review> extractReviewsFromCustomer(int customerId){
 
     LinkedList<Review> customerReviews = new LinkedList<Review>(); //empty list to store reviews for a specific customer
@@ -60,30 +48,270 @@ public class EcommerceSystem {
     } 
 
 
-    public LinkedList<Product> suggestTop3Products(){
-
-    }
-
     public LinkedList<Order> getAllOrdersBetweenDates(String startDate , String endDate){
 
     }
 
-    public LinkedList<Product> getCommonHighlyRatedProducts(int custId1 , int custId2){
+  
+																										//== 	PRODUCT OPERATIONS	==
+// (1) get common 5 star reviews
+	public LinkedList<Product> getCommonHighlyRatedProducts(int custId1, int custId2) {
+		LinkedList<Product> common = new LinkedList<>();
 
-    }
+		if (reviews.empty())
+			return common;
 
-    public void addProduct(Product product){
-        
-    }
+		// First product IDs that customer 1 loved
+		LinkedList<Integer> cust1Loves = new LinkedList<>();
 
-    public boolean removeProduct(int productId){
-        
-    }
+		reviews.findFirst();
+		while (!reviews.last()) {
+			Review r = reviews.retrieve();
+			if (r.getCustomer().getCustomerId() == custId1 && r.getRating() > 4) {
+				cust1Loves.insert(r.getProduct().getProductId());
+			}
+			reviews.findNext();
+		}
+		Review last = reviews.retrieve();
+		if (last.getCustomer().getCustomerId() == custId1 && last.getRating() > 4) {
+			cust1Loves.insert(last.getProduct().getProductId());
+		}
 
+		// Find matches in customer 2
+		reviews.findFirst();
+		while (!reviews.last()) {
+			Review r = reviews.retrieve();
+			if (r.getCustomer().getCustomerId() == custId2 && r.getRating() > 4) {
+				int productId = r.getProduct().getProductId();
 
-    public void updateProduct(int productId , String name , double price , int stock){
-        
-    }
+				// Check if customer 1 also loved this product
+				boolean cust1AlsoLoves = false;
+				if (!cust1Loves.empty()) {
+					cust1Loves.findFirst();
+					while (!cust1Loves.last()) {
+						if (cust1Loves.retrieve() == productId) {
+							cust1AlsoLoves = true;
+							break;
+						}
+						cust1Loves.findNext();
+					}
+					if (cust1Loves.retrieve() == productId) {
+						cust1AlsoLoves = true;
+					}
+				}
+
+				// Check if we already added this product
+				boolean alreadyAdded = false;
+				if (!common.empty()) {
+					common.findFirst();
+					while (!common.last()) {
+						if (common.retrieve().getProductId() == productId) {
+							alreadyAdded = true;
+							break;
+						}
+						common.findNext();
+					}
+					if (common.retrieve().getProductId() == productId) {
+						alreadyAdded = true;
+					}
+				}
+
+				if (cust1AlsoLoves && !alreadyAdded) {
+					common.insert(r.getProduct());
+				}
+			}
+			reviews.findNext();
+		}
+
+		// Check last review for customer 2
+		if (last.getCustomer().getCustomerId() == custId2 && last.getRating() > 4) {
+			int productId = last.getProduct().getProductId();
+
+			boolean cust1AlsoLoves = false;
+			if (!cust1Loves.empty()) {
+				cust1Loves.findFirst();
+				while (!cust1Loves.last()) {
+					if (cust1Loves.retrieve() == productId) {
+						cust1AlsoLoves = true;
+						break;
+					}
+					cust1Loves.findNext();
+				}
+				if (cust1Loves.retrieve() == productId) {
+					cust1AlsoLoves = true;
+				}
+			}
+
+			boolean alreadyAdded = false;
+			if (!common.empty()) {
+				common.findFirst();
+				while (!common.last()) {
+					if (common.retrieve().getProductId() == productId) {
+						alreadyAdded = true;
+						break;
+					}
+					common.findNext();
+				}
+				if (common.retrieve().getProductId() == productId) {
+					alreadyAdded = true;
+				}
+			}
+
+			if (cust1AlsoLoves && !alreadyAdded) {
+				common.insert(last.getProduct());
+			}
+		}
+
+		return common;
+	}
+
+// (2) top three products by rating
+	public LinkedList<Product> getTop3Products() {
+		Product first = null, second = null, third = null;
+		double r1 = -1, r2 = -1, r3 = -1;
+
+		if (!products.empty()) {
+			products.findFirst();
+			while (!products.last()) {
+				Product product = products.retrieve();
+				double rating = product.getAverageRating();
+
+				if (rating > r1) {
+					third = second;
+					r3 = r2;
+					second = first;
+					r2 = r1;
+					first = product;
+					r1 = rating;
+				} else if (rating > r2) {
+					third = second;
+					r3 = r2;
+					second = product;
+					r2 = rating;
+				} else if (rating > r3) {
+					third = product;
+					r3 = rating;
+				}
+
+				products.findNext();
+			}
+			// last element
+			Product lastProduct = products.retrieve();
+			double lastRating = lastProduct.getAverageRating();
+			if (lastRating > r1) {
+				third = second;
+				r3 = r2;
+				second = first;
+				r2 = r1;
+				first = lastProduct;
+				r1 = lastRating;
+			} else if (lastRating > r2) {
+				third = second;
+				r3 = r2;
+				second = lastProduct;
+				r2 = lastRating;
+			} else if (lastRating > r3) {
+				third = lastProduct;
+				r3 = lastRating;
+			}
+		}
+
+		LinkedList<Product> result = new LinkedList<>();
+		if (first != null)
+			result.insert(first);
+		if (second != null)
+			result.insert(second);
+		if (third != null)
+			result.insert(third);
+
+		return result;
+	}
+
+// (3) track out of stock products
+	public LinkedList<Product> trackOutOfStockProducts() {
+		LinkedList<Product> outOfStock = new LinkedList<>();
+		products.findFirst();
+		while (!products.last()) {
+			Product product = products.retrieve();
+			if (product.getStock() <= 0) {
+				outOfStock.insert(product);
+			}
+			products.findNext();
+		}
+		Product product = products.retrieve();
+		if (product.getStock() <= 0) {
+			outOfStock.insert(product);
+		}
+		return outOfStock;
+	}
+
+// (4) add product
+	public void addProduct(Product product) {
+		products.insert(product);
+	}
+
+// (5) remove product
+	public boolean removeProduct(int productId) {
+		products.findFirst();
+		while (!products.last()) {
+			Product product = products.retrieve();
+			if (product.getProductId() == productId) {
+				products.remove();
+				return true;
+			}
+			products.findNext();
+		}
+		Product product = products.retrieve();
+		if (product.getProductId() == productId) {
+			products.remove();
+			return true;
+		}
+		return false;
+	}
+
+// (6) update a product
+	public void updateProduct(int productId, String name, double price, int stock) {
+		Product product = searchProductById(productId);
+		if (product != null) {
+			product.setName(name);
+			product.setPrice(price);
+			product.setStock(stock);
+		}
+	}
+
+// (7) Search a product id
+	public Product searchProductById(int productId) {
+		products.findFirst();
+		while (!products.last()) {
+			Product product = products.retrieve();
+			if (product.getProductId() == productId) {
+				return product;
+			}
+			products.findNext();
+		}
+		Product product = products.retrieve();
+		return (product.getProductId() == productId) ? product : null;
+	}
+
+// (8) Search product name
+	public Product searchProductByName(String name) {
+		products.findFirst();
+		while (!products.last()) {
+			Product product = products.retrieve();
+			if (product.getName().equalsIgnoreCase(name)) {
+				return product;
+			}
+			products.findNext();
+		}
+		Product product = products.retrieve();
+		return (product.getName().equalsIgnoreCase(name)) ? product : null;
+	}
+// (9) product average rating by id
+	public double getAverageRating(int productId) {
+		Product product = searchProductById(productId);
+		return (product != null) ? product.getAverageRating() : 0.0;
+	}
+																										//==END OF PRODUCT OPERATIONS==
 
     public Customer registerCustomer(int productId , String name , String email){
         
