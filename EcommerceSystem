@@ -27,18 +27,11 @@ public class EcommerceSystem {
         return reviews;
     }
 
-    public LinkedList<Order> getAllOrdersBetweenDates(String startDate , String endDate){
-
-    }
 
 																										//== 	REVIEW OPERATIONS	==
 
-
-    public void editReview(int reviewId , int rating , String comment){
-
-    }
-// Extract reviews from a specific customer 
- public LinkedList<Review> extractReviewsFromCustomer(int customerId){
+// (1) Extract reviews from a specific customer 
+    public LinkedList<Review> extractReviewsFromCustomer(int customerId){
 
     LinkedList<Review> customerReviews = new LinkedList<Review>(); //empty list to store reviews for a specific customer
 
@@ -56,12 +49,132 @@ public class EcommerceSystem {
             customerReviews.insert(review);
     }
     return customerReviews;
-    } 
+    }  
+
+
+
+
+
+
+// (2) Add review
+    public Review addReview(int reviewId , int productId , int customerId , int rating , String comment){
+        if (rating < 1 || rating > 5) {
+        System.out.println("Rating must be between 1 and 5 !");
+        return null;
+    }
+            // Find product and customer
+    Product product = searchProductById(productId);
+    Customer customer = searchCustomerById(customerId);
+
+
+    if (product == null || customer == null) {
+        System.out.println("Product or Customer not found");
+        return null;
+    }
+    
+            // add the new review
+    Review review = new Review(reviewId, product, customer, rating, comment);
+     reviews.insert(review);
+
+      System.out.println("Review added successfully!");
+      return review;
+}
+
+
+
+
+
+
+// (3) edit review
+    public void editReview(int reviewId, int rating, String comment) {
+    if (reviews.empty()) {
+        System.out.println("Review with ID " + reviewId + " not found!");
+        return;
+    }
+    reviews.findFirst();
+    
+    // Check all reviews except the last one
+    while (!reviews.last()) {
+
+        Review review = reviews.retrieve();
+        if (review.getReviewId() == reviewId) {
+            Review updatedReview = new Review(reviewId , review.getProduct() , review.getCustomer() , rating, comment);
+            reviews.update(updatedReview);
+            System.out.println("Review " + reviewId + " updated successfully!");
+            return;
+        }
+        reviews.findNext();
+    }
+    
+    // Check the last element
+    Review review = reviews.retrieve();
+    if (review.getReviewId() == reviewId) {
+        Review updatedReview = new Review(reviewId , review.getProduct() , review.getCustomer() , rating , comment);
+        reviews.update(updatedReview);
+        System.out.println("Review " + reviewId + " updated successfully!");
+        return;
+    }
+    
+      System.out.println("Review with ID " + reviewId + " not found!");
+}
 																										//==END OF REVIEW OPERATIONS==
 
 
+
+
+																										//== 	CUSTOMER OPERATIONS	==
+																										
+// (4) Search a customer id
+    public Customer searchCustomerById(int customerId) {
+    customers.findFirst();
+    while (!customers.last()) {
+        Customer customer = customers.retrieve();
+        if (customer.getCustomerId() == customerId) {
+            return customer;
+        }
+        customers.findNext();
+    }
+    Customer customer = customers.retrieve();
+    return (customer.getCustomerId() == customerId) ? customer : null;
+    }
+
+
+
+
+
+
+// (5) Register customer
+    public Customer registerCustomer(int customerId, String name, String email) {
+    // Check if customer already exists
+    if (!customers.empty()) {
+        customers.findFirst();
+        while (!customers.last()) {
+            Customer customer = customers.retrieve();
+            if (customer.getCustomerId() == customerId) {
+                System.out.println("Customer with ID " + customerId + " already exists!");
+                return null;
+            }
+            customers.findNext();
+        }
+        // Check last customer
+        Customer lastCustomer = customers.retrieve();
+        if (lastCustomer.getCustomerId() == customerId) {
+            System.out.println("Customer with ID " + customerId + " already exists!");
+            return null;
+        }
+    }
+    // Create and add new customer
+    Customer newCustomer = new Customer(customerId, name, email);
+    customers.insert(newCustomer);
+    
+    System.out.println("Customer '" + name + "' registered successfully!");
+    return newCustomer;
+}
+																										//==END OF CUSTOMER OPERATIONS==
+
+
 																										//== 	PRODUCT OPERATIONS	==
-// (2) get common 5 star reviews
+// (6) get common 5 star reviews
 	public LinkedList<Product> getCommonHighlyRatedProducts(int custId1, int custId2) {
 		LinkedList<Product> common = new LinkedList<>();
 
@@ -172,7 +285,11 @@ public class EcommerceSystem {
 		return common;
 	}
 
-// (3) top three products by rating
+
+
+
+
+// (7) top three products by rating
 	public LinkedList<Product> getTop3Products() {
 		Product first = null, second = null, third = null;
 		double r1 = -1, r2 = -1, r3 = -1;
@@ -234,7 +351,11 @@ public class EcommerceSystem {
 		return result;
 	}
 
-// (4) track out of stock products
+
+
+
+
+// (8) track out of stock products
 	public LinkedList<Product> trackOutOfStockProducts() {
 		LinkedList<Product> outOfStock = new LinkedList<>();
 		products.findFirst();
@@ -252,12 +373,22 @@ public class EcommerceSystem {
 		return outOfStock;
 	}
 
-// (5) add product
+
+
+
+
+
+// (9) add product
 	public void addProduct(Product product) {
 		products.insert(product);
 	}
 
-// (6) remove product
+ 
+
+
+
+
+// (10) remove product
 	public boolean removeProduct(int productId) {
 		products.findFirst();
 		while (!products.last()) {
@@ -276,7 +407,14 @@ public class EcommerceSystem {
 		return false;
 	}
 
-// (7) update a product
+
+
+
+
+
+
+
+// (11) update a product
 	public void updateProduct(int productId, String name, double price, int stock) {
 		Product product = searchProductById(productId);
 		if (product != null) {
@@ -286,8 +424,13 @@ public class EcommerceSystem {
 		}
 	}
 
-// (8) Search a product id
-	public Product searchProductById(int productId) {
+
+
+
+
+
+// (12) Search a product id
+    public Product searchProductById(int productId) {
 		products.findFirst();
 		while (!products.last()) {
 			Product product = products.retrieve();
@@ -301,32 +444,12 @@ public class EcommerceSystem {
 	}
 
 
-    // (9) Search a customer id
-    public Customer searchCustomerById(int customerId) {
-    if (customers.empty()) {
-        return null;
-    }
-    
-    customers.findFirst();
-    while (!customers.last()) {
-        Customer customer = customers.retrieve();
-        if (customer != null && customer.getCustomerId() == customerId) {
-            return customer;
-        }
-        customers.findNext();
-    }
-    
-    // Check the last customer
-    Customer customer = customers.retrieve();
-    if (customer != null && customer.getCustomerId() == customerId) {
-        return customer;
-    }
-    
-    return null; 
-}
 
-// (9) Search product name
-	public Product searchProductByName(String name) {
+
+
+
+// (13) Search product name
+    public Product searchProductByName(String name) {
 		products.findFirst();
 		while (!products.last()) {
 			Product product = products.retrieve();
@@ -338,13 +461,25 @@ public class EcommerceSystem {
 		Product product = products.retrieve();
 		return (product.getName().equalsIgnoreCase(name)) ? product : null;
 	}
-// (10) product average rating by id
-	public double getAverageRating(int productId) {
+
+
+
+
+
+
+// (14) product average rating by id
+    public double getAverageRating(int productId) {
 		Product product = searchProductById(productId);
 		return (product != null) ? product.getAverageRating() : 0.0;
 	}
-// (11) Display all products that are in stock 
-	public void displayAvailableProducts() {
+
+
+
+
+
+
+// (15) Display all products that are in stock 
+    public void displayAvailableProducts() {
 	    if (products.empty()) {
 	        System.out.println(" No products available in the system.");
 	        return;
@@ -374,16 +509,17 @@ public class EcommerceSystem {
 	    
 	    System.out.println("└─────┴────────────────────────────────────┴────────────┴───────┘");
 	}
+
+
 																										//==END OF PRODUCT OPERATIONS==
 
-    // (12) Register customer
-    public Customer registerCustomer(int productId , String name , String email){
-        
-    }
 
-    // (13) Create order 
+																										//== 	ORDER OPERATIONS	==
+																							
+																									
+// (16) Create order 
     public Order createOrder(int orderId , int customerId , LinkedList<Product> products , String orderDate){
-    Customer = searchCustomerById(customerId);
+    Customer customer = searchCustomerById(customerId);
     if (customer == null) {
    System.out.println("Customer not found.");
         return null;
@@ -405,48 +541,106 @@ public class EcommerceSystem {
     }
 //end of method creat order
 
-// (14) Cancel order 
-     public void cancelOrder(int orderId){
-        for (Order o : orders) {
-            if (o.getOrderId() == orderId) {
-                o.setStatus("Cancelled");
-                break;
-            }
-        }
-    }
-
-// (15) Update order 
-    public void updateOrderStatus(int orderId , String newStatus){
-    for (Order o : orders) {
-            if (o.getOrderId() == orderId) {
-                o.setStatus(newStatus);
-                break;
-            }
-        }
-    }
- // (16) Add review
-    public Review addReview(int reviewId , int productId , int customerId , int rating , String comment){
-        if (rating < 1 || rating > 5) {
-        System.out.println("Rating must be between 1 and 5 !");
-        return null;
-    }
-    // Find product and customer
-    Product product = searchProductById(productId);
-    Customer customer = searchCustomerById(customerId);
 
 
-    if (product == null || customer == null) {
-        System.out.println("Product or Customer not found");
-        return null;
+
+
+
+// (17) Cancel order 
+    public void cancelOrder(int orderId) {
+    if (orders.empty()) {
+        System.out.println("No orders found!");
+        return;
     }
     
-    // add the new review
-    Review review = new Review(reviewId, product, customer, rating, comment);
-     reviews.insert(review);
-
-      System.out.println("Review added successfully!");
-      return review;
-}
+    orders.findFirst();
+    while (!orders.last()) {
+        Order order = orders.retrieve();
+        if (order.getOrderId() == orderId) {
+            order.setStatus("Cancelled");
+            System.out.println("Order " + orderId + " cancelled successfully!");
+            return;
+        }
+        orders.findNext();
     }
+    
+    // Check last order
+    Order lastOrder = orders.retrieve();
+    if (lastOrder.getOrderId() == orderId) {
+        lastOrder.setStatus("Cancelled");
+        System.out.println("Order " + orderId + " cancelled successfully!");
+        return;
+    }
+    
+    System.out.println("Order with ID " + orderId + " not found!");
+}
+
+
+
+
+
+// (18) Update order 
+    public void updateOrderStatus(int orderId, String newStatus) {
+    if (orders.empty()) {
+        System.out.println("No orders found!");
+        return;
+    }
+    
+    orders.findFirst();
+    while (!orders.last()) {
+        Order order = orders.retrieve();
+        if (order.getOrderId() == orderId) {
+            order.setStatus(newStatus);
+            System.out.println("Order " + orderId + " status updated to: " + newStatus);
+            return;
+        }
+        orders.findNext();
+    }
+    
+    // Check last order
+    Order lastOrder = orders.retrieve();
+    if (lastOrder.getOrderId() == orderId) {
+        lastOrder.setStatus(newStatus);
+        System.out.println("Order " + orderId + " status updated to: " + newStatus);
+        return;
+    }
+    
+    System.out.println("Order with ID " + orderId + " not found!");
+}
+
+
+
+
+
+// (19) Search an order id
+	public Order searchOrderById(int orderId) {
+    orders.findFirst();
+    while (!orders.last()) {
+        Order order = orders.retrieve();
+        if (order.getOrderId() == orderId) {
+            return order;
+        }
+        orders.findNext();
+    }
+    Order order = orders.retrieve();
+    return (order.getOrderId() == orderId) ? order : null;
+}
+
+
+
+
+// (20) Orders between 2 dates
+    public LinkedList<Order> getAllOrdersBetweenDates(String startDate , String endDate){
+
+    }
+																	
+																										//==END OF ORDER OPERATIONS==
+
+
+
+    
+
+    
+}
 
 
