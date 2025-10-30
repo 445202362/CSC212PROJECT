@@ -319,6 +319,37 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 		Product product = searchProductById(productId);
 		return (product != null) ? product.getAverageRating() : 0.0;
 	}
+// (10) Display all products that are in stock 
+	public void displayAvailableProducts() {
+	    if (products.empty()) {
+	        System.out.println(" No products available in the system.");
+	        return;
+	    }
+	    
+	    System.out.println("\n AVAILABLE PRODUCTS (In Stock):");
+	    System.out.println("┌─────┬────────────────────────────────────┬────────────┬───────┐");
+	    System.out.println("│ ID  │ Product Name                       │ Price      │ Stock │");
+	    System.out.println("├─────┼────────────────────────────────────┼────────────┼───────┤");
+	    
+	    products.findFirst();
+	    while (!products.last()) {
+	        Product p = products.retrieve();
+	        if (p.getStock() > 0) {
+	            System.out.printf("│ %-3d │ %-34s │ $%-9.2f │ %-5d │%n",
+	                p.getProductId(), p.getName(), p.getPrice(), p.getStock());
+	        }
+	        products.findNext();
+	    }
+	    
+	    // Check last product
+	    Product last = products.retrieve();
+	    if (last.getStock() > 0) {
+	        System.out.printf("│ %-3d │ %-34s │ $%-9.2f │ %-5d │%n",
+	            last.getProductId(), last.getName(), last.getPrice(), last.getStock());
+	    }
+	    
+	    System.out.println("└─────┴────────────────────────────────────┴────────────┴───────┘");
+	}
 																										//==END OF PRODUCT OPERATIONS==
 
     public Customer registerCustomer(int productId , String name , String email){
