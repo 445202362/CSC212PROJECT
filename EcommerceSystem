@@ -32,9 +32,7 @@ public class EcommerceSystem {
     }
 
 																										//== 	REVIEW OPERATIONS	==
-public Review addReview(int reviewId , int productId , int customerId , int rating , String comment){
 
-    }
 
     public void editReview(int reviewId , int rating , String comment){
 
@@ -302,6 +300,31 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 		return (product.getProductId() == productId) ? product : null;
 	}
 
+
+    // (9) Search a customer id
+    public Customer searchCustomerById(int customerId) {
+    if (customers.empty()) {
+        return null;
+    }
+    
+    customers.findFirst();
+    while (!customers.last()) {
+        Customer customer = customers.retrieve();
+        if (customer != null && customer.getCustomerId() == customerId) {
+            return customer;
+        }
+        customers.findNext();
+    }
+    
+    // Check the last customer
+    Customer customer = customers.retrieve();
+    if (customer != null && customer.getCustomerId() == customerId) {
+        return customer;
+    }
+    
+    return null; 
+}
+
 // (9) Search product name
 	public Product searchProductByName(String name) {
 		products.findFirst();
@@ -360,7 +383,7 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 
     // (13) Create order 
     public Order createOrder(int orderId , int customerId , LinkedList<Product> products , String orderDate){
-    Customer = findCustomerById(customerId);
+    Customer = searchCustomerById(customerId);
     if (customer == null) {
    System.out.println("Customer not found.");
         return null;
@@ -392,13 +415,38 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
         }
     }
 
-    // (15) Update order 
+// (15) Update order 
     public void updateOrderStatus(int orderId , String newStatus){
- for (Order o : orders) {
+    for (Order o : orders) {
             if (o.getOrderId() == orderId) {
                 o.setStatus(newStatus);
                 break;
             }
         }
     }
+ // (16) Add review
+    public Review addReview(int reviewId , int productId , int customerId , int rating , String comment){
+        if (rating < 1 || rating > 5) {
+        System.out.println("Rating must be between 1 and 5 !");
+        return null;
+    }
+    // Find product and customer
+    Product product = searchProductById(productId);
+    Customer customer = searchCustomerById(customerId);
+
+
+    if (product == null || customer == null) {
+        System.out.println("Product or Customer not found");
+        return null;
+    }
+    
+    // add the new review
+    Review review = new Review(reviewId, product, customer, rating, comment);
+     reviews.insert(review);
+
+      System.out.println("Review added successfully!");
+      return review;
 }
+    }
+
+
