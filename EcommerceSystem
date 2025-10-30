@@ -39,6 +39,7 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
     public void editReview(int reviewId , int rating , String comment){
 
     }
+// Extract reviews from a specific customer 
  public LinkedList<Review> extractReviewsFromCustomer(int customerId){
 
     LinkedList<Review> customerReviews = new LinkedList<Review>(); //empty list to store reviews for a specific customer
@@ -62,7 +63,7 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 
 
 																										//== 	PRODUCT OPERATIONS	==
-// (1) get common 5 star reviews
+// (2) get common 5 star reviews
 	public LinkedList<Product> getCommonHighlyRatedProducts(int custId1, int custId2) {
 		LinkedList<Product> common = new LinkedList<>();
 
@@ -173,7 +174,7 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 		return common;
 	}
 
-// (2) top three products by rating
+// (3) top three products by rating
 	public LinkedList<Product> getTop3Products() {
 		Product first = null, second = null, third = null;
 		double r1 = -1, r2 = -1, r3 = -1;
@@ -235,7 +236,7 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 		return result;
 	}
 
-// (3) track out of stock products
+// (4) track out of stock products
 	public LinkedList<Product> trackOutOfStockProducts() {
 		LinkedList<Product> outOfStock = new LinkedList<>();
 		products.findFirst();
@@ -253,12 +254,12 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 		return outOfStock;
 	}
 
-// (4) add product
+// (5) add product
 	public void addProduct(Product product) {
 		products.insert(product);
 	}
 
-// (5) remove product
+// (6) remove product
 	public boolean removeProduct(int productId) {
 		products.findFirst();
 		while (!products.last()) {
@@ -277,7 +278,7 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 		return false;
 	}
 
-// (6) update a product
+// (7) update a product
 	public void updateProduct(int productId, String name, double price, int stock) {
 		Product product = searchProductById(productId);
 		if (product != null) {
@@ -287,7 +288,7 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 		}
 	}
 
-// (7) Search a product id
+// (8) Search a product id
 	public Product searchProductById(int productId) {
 		products.findFirst();
 		while (!products.last()) {
@@ -301,7 +302,7 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 		return (product.getProductId() == productId) ? product : null;
 	}
 
-// (8) Search product name
+// (9) Search product name
 	public Product searchProductByName(String name) {
 		products.findFirst();
 		while (!products.last()) {
@@ -314,12 +315,12 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 		Product product = products.retrieve();
 		return (product.getName().equalsIgnoreCase(name)) ? product : null;
 	}
-// (9) product average rating by id
+// (10) product average rating by id
 	public double getAverageRating(int productId) {
 		Product product = searchProductById(productId);
 		return (product != null) ? product.getAverageRating() : 0.0;
 	}
-// (10) Display all products that are in stock 
+// (11) Display all products that are in stock 
 	public void displayAvailableProducts() {
 	    if (products.empty()) {
 	        System.out.println(" No products available in the system.");
@@ -352,10 +353,12 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
 	}
 																										//==END OF PRODUCT OPERATIONS==
 
+    // (12) Register customer
     public Customer registerCustomer(int productId , String name , String email){
         
     }
 
+    // (13) Create order 
     public Order createOrder(int orderId , int customerId , LinkedList<Product> products , String orderDate){
     Customer = findCustomerById(customerId);
     if (customer == null) {
@@ -378,6 +381,8 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
     return newOrder;
     }
 //end of method creat order
+
+// (14) Cancel order 
      public void cancelOrder(int orderId){
         for (Order o : orders) {
             if (o.getOrderId() == orderId) {
@@ -387,6 +392,7 @@ public Review addReview(int reviewId , int productId , int customerId , int rati
         }
     }
 
+    // (15) Update order 
     public void updateOrderStatus(int orderId , String newStatus){
  for (Order o : orders) {
             if (o.getOrderId() == orderId) {
