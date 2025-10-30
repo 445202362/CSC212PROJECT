@@ -27,7 +27,19 @@ public class EcommerceSystem {
         return reviews;
     }
 
-    public LinkedList<Review> extractReviewsFromCustomer(int customerId){
+    public LinkedList<Order> getAllOrdersBetweenDates(String startDate , String endDate){
+
+    }
+
+																										//== 	REVIEW OPERATIONS	==
+public Review addReview(int reviewId , int productId , int customerId , int rating , String comment){
+
+    }
+
+    public void editReview(int reviewId , int rating , String comment){
+
+    }
+ public LinkedList<Review> extractReviewsFromCustomer(int customerId){
 
     LinkedList<Review> customerReviews = new LinkedList<Review>(); //empty list to store reviews for a specific customer
 
@@ -46,13 +58,9 @@ public class EcommerceSystem {
     }
     return customerReviews;
     } 
+																										//==END OF REVIEW OPERATIONS==
 
 
-    public LinkedList<Order> getAllOrdersBetweenDates(String startDate , String endDate){
-
-    }
-
-  
 																										//== 	PRODUCT OPERATIONS	==
 // (1) get common 5 star reviews
 	public LinkedList<Product> getCommonHighlyRatedProducts(int custId1, int custId2) {
@@ -326,14 +334,6 @@ public class EcommerceSystem {
     }
 
     public void updateOrderStatus(int orderId , String newStatus){
-
-    }
-
-    public Review addReview(int reviewId , int productId , int customerId , int rating , String comment){
-
-    }
-
-    public void editReview(int reviewId , int rating , String comment){
 
     }
 }
