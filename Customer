@@ -1,6 +1,6 @@
 public class Customer {
 
-       private int customerId;
+       int customerId;
        private String name;
        private String email;
        private LinkedList<Order> orders;
@@ -12,7 +12,12 @@ public class Customer {
        this.email=email;
        this.orders=new LinkedList<Order>(); //initialize an empty list
 
-}
+    }
+
+    public void addOrder(Order order){
+     if(order != null)
+     orders.insert(order);
+    }
     public LinkedList<Order> viewOrderHistory(){
        return this.orders;
     }
