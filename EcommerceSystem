@@ -664,7 +664,134 @@ public class EcommerceSystem {
 
 
     
+														// Main method for loading
+	public void loadAllData() {
+		System.out.println("Loading all data...");
+		loadCustomers();
+		loadProducts();
+		loadOrders();
+		loadReviews();
+		System.out.println("Data loading completed!");
+	}
 
+	private void loadCustomers() {
+		try (BufferedReader br = new BufferedReader(new FileReader("customers.csv"))) {
+			String line = br.readLine(); // Skip header
+			int count = 0;
+
+			while ((line = br.readLine()) != null) {
+				String[] data = line.split(",");
+				if (data.length >= 3) {
+					int customerId = Integer.parseInt(data[0].trim());
+					String name = data[1].trim();
+					String email = data[2].trim();
+
+					Customer customer = new Customer(customerId, name, email);
+					customers.insert(customer);
+					count++;
+				}
+			}
+			System.out.println("Loaded " + count + " customers");
+		} catch (IOException e) {
+			System.err.println("Error loading customers: " + e.getMessage());
+		}
+	}
+
+	private void loadProducts() {
+		try (BufferedReader br = new BufferedReader(new FileReader("prodcuts.csv"))) {
+			String line = br.readLine(); // Skip header
+			int count = 0;
+
+			while ((line = br.readLine()) != null) {
+				String[] data = line.split(",");
+				if (data.length >= 4) {
+					int productId = Integer.parseInt(data[0].trim());
+					String name = data[1].trim();
+					double price = Double.parseDouble(data[2].trim());
+					int stock = Integer.parseInt(data[3].trim());
+
+					Product product = new Product(productId, name, price, stock);
+					products.insert(product);
+					count++;
+				}
+			}
+			System.out.println("Loaded " + count + " products");
+		} catch (IOException e) {
+			System.err.println("Error loading products: " + e.getMessage());
+		}
+	}
+
+	private void loadOrders() {
+		try (BufferedReader br = new BufferedReader(new FileReader("orders.csv"))) {
+			String line = br.readLine(); // Skip header
+			int count = 0;
+
+			while ((line = br.readLine()) != null) {
+				String[] data = line.split(",");
+				if (data.length >= 6) {
+					int orderId = Integer.parseInt(data[0].trim());
+					int customerId = Integer.parseInt(data[1].trim());
+					String productIdsStr = data[2].trim().replace("\"", "");
+					double totalPrice = Double.parseDouble(data[3].trim());
+					String orderDate = data[4].trim();
+					String status = data[5].trim();
+
+					Customer customer = searchCustomerById(customerId);
+					if (customer != null) {
+						LinkedList<Product> orderProducts = new LinkedList<>();
+						String[] productIds = productIdsStr.split(";");
+
+						for (String productIdStr : productIds) {
+							int productId = Integer.parseInt(productIdStr.trim());
+							Product product = searchProductById(productId);
+							if (product != null) {
+								orderProducts.insert(product);
+							}
+						}
+
+						Order order = new Order(orderId, customer, orderProducts, totalPrice, orderDate, status);
+						orders.insert(order);
+						customer.addOrder(order);
+						count++;
+					}
+				}
+			}
+			System.out.println("Loaded " + count + " orders");
+		} catch (IOException e) {
+			System.err.println("Error loading orders: " + e.getMessage());
+		}
+	}
+
+	private void loadReviews() {
+		try (BufferedReader br = new BufferedReader(new FileReader("reviews.csv"))) {
+			String line = br.readLine(); // Skip header
+			int count = 0;
+
+			while ((line = br.readLine()) != null) {
+				String[] data = line.split(",");
+				if (data.length >= 5) {
+					int reviewId = Integer.parseInt(data[0].trim());
+					int productId = Integer.parseInt(data[1].trim());
+					int customerId = Integer.parseInt(data[2].trim());
+					int rating = Integer.parseInt(data[3].trim());
+					String comment = data[4].trim().replace("\"", "");
+
+					Product product = searchProductById(productId);
+					Customer customer = searchCustomerById(customerId);
+
+					if (product != null && customer != null) {
+						Review review = new Review(reviewId, product, customer, rating, comment);
+						reviews.insert(review);
+						product.addReview(review);
+						count++;
+					}
+				}
+			}
+			System.out.println("Loaded " + count + " reviews");
+		} catch (IOException e) {
+			System.err.println("Error loading reviews: " + e.getMessage());
+		}
+	}
     
 }
 
