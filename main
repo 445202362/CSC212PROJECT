@@ -1,1 +1,163 @@
+package project;
+
+import java.util.Scanner;
+
+public class Main {
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+		EcommerceSystem amazon = new EcommerceSystem();
+		System.out.println("╭───────────────────────────────╮\r\n" + "│ 	  Welcome to Amazon !    	    │\r\n"
+				+ "╰───────────────────────────────╯");
+		System.out.println("One moment, we’re getting things ready…");
+		amazon.loadAllData();
+		System.out.println("Data loaded successfully!\n");
+		int choice;
+
+		do {
+
+			System.out.println("\n- MAIN MENU -");
+			System.out.println("1. Product menu");
+			System.out.println("2. Customer menu");
+			System.out.println("3. Order menu");
+			System.out.println("4. Exit");
+			System.out.print("Enter your choice (1-4): ");
+
+			choice = scanner.nextInt();
+			scanner.nextLine();
+			switch (choice) {
+			case 1:
+				int choice2;
+				do {
+					System.out.println("\n- PRODUCT MENU -");
+					System.out.println("1. Add New Product to the stock");
+					System.out.println("2. Remove a product");
+					System.out.println("3. Update Product Stock");
+					System.out.println("4. Search product by ID or Name");
+					System.out.println("5. Display the top 3 products");
+					System.out.println("6. Display the Common products between 2 customers");
+					System.out.println("7. Back to Main Menu");
+					System.out.print("Enter choice (1-7): ");
+
+					choice2 = scanner.nextInt();
+					scanner.nextLine();
+
+					switch (choice2) {
+					case 1:
+
+						break;
+					case 2:
+
+						break;
+					case 3:
+
+						break;
+					case 4:
+
+						break;
+					case 5:
+
+						break;
+					case 6:
+
+						break;
+					case 7:
+						System.out.println("Returning to main menu...");
+						break;
+					default:
+						System.out.println("Invalid choice!");
+					}
+
+				} while (choice2 != 7);
+
+				break;
+			case 2:
+				int choice3;
+
+				do {
+					System.out.println("\n- CUSTOMER MENU -");
+					System.out.println("1. Register Customer");
+					System.out.println("2. View Customer Reviews");
+					System.out.println("3. Add review");
+					System.out.println("4. Edit review");
+					System.out.println("5. Back to Main Menu");
+					System.out.print("Enter choice (1-5): ");
+
+					choice3 = scanner.nextInt();
+					scanner.nextLine();
+
+					switch (choice3) {
+					case 1:
+						break;
+					case 2:
+
+						break;
+					case 3:
+
+						break;
+					case 4:
+
+						break;
+					case 5:
+						System.out.println("Returning to main menu...");
+						break;
+					default:
+						System.out.println("Invalid choice!");
+					}
+
+				} while (choice3 != 5);
+				break;
+			case 3:
+				int choice4;
+
+				do {
+					System.out.println("\n- Order Menu -");
+					System.out.println("1. Place an Order");
+					System.out.println("2. Cancel Order");
+					System.out.println("3. Update Order Satus");
+					System.out.println("4. Search Order by ID");
+					System.out.println("5. Display All Orders between two dates");
+					System.out.println("6. Back to main menu");
+
+					System.out.print("Enter choice (1-6): ");
+
+					choice4 = scanner.nextInt();
+
+					switch (choice4) {
+					case 1:
+
+						break;
+					case 2:
+
+						break;
+					case 3:
+
+						break;
+					case 4:
+
+						break;
+					case 5:
+
+						break;
+					case 6:
+						System.out.println("Returning to main menu...");
+						break;
+					default:
+						System.out.println("Invalid choice!");
+					}
+
+				} while (choice4 != 6);
+				break;
+			case 4:
+				System.out.println("Goodbye!");
+				break;
+			default:
+				System.out.println("Invalid choice! Try again.");
+			}
+
+		} while (choice != 4);
+
+	}
+
+}
 
