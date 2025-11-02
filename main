@@ -44,21 +44,186 @@ public class Main {
 
 					switch (choice2) {
 					case 1:
+						// Add New Product
+						System.out.println("\n*** ADD NEW PRODUCT ***");
+						System.out.print("Enter product ID: ");
+						int newProductId = scanner.nextInt();
+						scanner.nextLine();
+
+						// Check if product already exists
+						if (amazon.searchProductById(newProductId) != null) {
+							System.out.println(" Product with ID " + newProductId + " already exists!");
+							break;
+						}
+
+						System.out.print("Enter product name: ");
+						String productName = scanner.nextLine();
+
+						System.out.print("Enter product price: ");
+						double productPrice = scanner.nextDouble();
+						scanner.nextLine();
+
+						System.out.print("Enter initial stock: ");
+						int initialStock = scanner.nextInt();
+						scanner.nextLine();
+
+						Product newProduct = new Product(newProductId, productName, productPrice, initialStock);
+						amazon.addProduct(newProduct);
+						System.out.println(" Product added successfully!");
 
 						break;
 					case 2:
+						System.out.println("\n*** REMOVE PRODUCT ***");
+						System.out.print("Enter product ID to remove: ");
+						int removeProductId = scanner.nextInt();
+						scanner.nextLine();
 
+						if (amazon.removeProduct(removeProductId)) {
+							System.out.println(" Product removed successfully!");
+						} else {
+							System.out.println(" Product not found with ID: " + removeProductId);
+						}
 						break;
 					case 3:
+						System.out.println("\n*** UPDATE PRODUCT STOCK ***");
+						System.out.print("Enter product ID: ");
+						int updateProductId = scanner.nextInt();
+						scanner.nextLine();
+
+						Product productToUpdate = amazon.searchProductById(updateProductId);
+						if (productToUpdate != null) {
+							System.out.print("Enter new stock quantity: ");
+							int newStock = scanner.nextInt();
+							scanner.nextLine();
+							productToUpdate.setStock(newStock);
+							System.out.println(" Stock updated successfully!");
+						} else {
+							System.out.println(" Product not found!");
+						}
 
 						break;
 					case 4:
+						// Search Product by ID or Name
+						System.out.println("\n*** SEARCH PRODUCT ***");
+						System.out.println("1. Search by ID");
+						System.out.println("2. Search by Name");
+						System.out.print("Choose search method (1-2): ");
+						int searchMethod = scanner.nextInt();
+						scanner.nextLine();
+
+						if (searchMethod == 1) {
+							System.out.print("Enter product ID: ");
+							int searchId = scanner.nextInt();
+							scanner.nextLine();
+							Product foundProduct = amazon.searchProductById(searchId);
+							if (foundProduct != null) {
+								System.out.println(" Product Found:");
+								System.out.printf("ID: %d | Name: %s | Price: $%.2f | Stock: %d%n",
+										foundProduct.getProductId(), foundProduct.getName(), foundProduct.getPrice(),
+										foundProduct.getStock());
+							} else {
+								System.out.println(" Product not found with ID: " + searchId);
+							}
+						} else if (searchMethod == 2) {
+							System.out.print("Enter product name: ");
+							String searchName = scanner.nextLine();
+							amazon.searchProductByName(searchName);
+						} else {
+							System.out.println(" Invalid choice!");
+						}
 
 						break;
 					case 5:
+						// Display Top 3 Products
+						System.out.println("\n*** TOP 3 PRODUCTS BY RATING ***");
+						LinkedList<Product> topProducts = amazon.getTop3Products();
 
+						if (topProducts.empty()) {
+							System.out.println("No products available or no products with ratings.");
+						} else {
+							System.out.println(" TOP 3 PRODUCTS BY AVERAGE RATING:");
+							topProducts.findFirst();
+							int rank = 1;
+
+							while (topProducts.retrieve() != null) {
+								Product product = topProducts.retrieve();
+								double avgRating = product.getAverageRating();
+								int reviewCount = product.getReviews().size();
+
+								System.out.printf("%d. %s - Rating: %.2f/5.0", rank, product.getName(), avgRating);
+
+								if (reviewCount > 0) {
+									System.out.printf(" (Based on %d review%s)%n", reviewCount,
+											reviewCount == 1 ? "" : "s");
+								} else {
+									System.out.println(" (No reviews yet)");
+								}
+
+								// Show product details
+								System.out.printf("   ID: %d | Price: $%.2f | Stock: %d%n", product.getProductId(),
+										product.getPrice(), product.getStock());
+
+								rank++;
+								if (!topProducts.last()) {
+									topProducts.findNext();
+								} else {
+									break;
+								}
+							}
+						}
 						break;
 					case 6:
+						// Common Products Between 2 Customers
+						System.out.println("\n*** COMMON HIGHLY RATED PRODUCTS ***");
+						System.out.print("Enter first customer ID: ");
+						int custId1 = scanner.nextInt();
+						scanner.nextLine();
+
+						System.out.print("Enter second customer ID: ");
+						int custId2 = scanner.nextInt();
+						scanner.nextLine();
+
+						// Call your method that returns LinkedList<Product>
+						LinkedList<Product> commonProducts = amazon.getCommonHighlyRatedProducts(custId1, custId2);
+
+						if (commonProducts.empty()) {
+							System.out.println(
+									" No common highly rated products (rating > 4) found between these customers.");
+						} else {
+							System.out.println("\n COMMON HIGHLY RATED PRODUCTS (Rating > 4):");
+							commonProducts.findFirst();
+							int count = 1;
+
+							while (commonProducts.retrieve() != null) {
+								Product product = commonProducts.retrieve();
+								double avgRating = product.getAverageRating();
+								int reviewCount = product.getReviews().size();
+
+								System.out.printf("%d. %s%n", count, product.getName());
+								System.out.printf("   Rating: %.2f/5.0", avgRating);
+
+								if (reviewCount > 0) {
+									System.out.printf(" (Based on %d review%s)%n", reviewCount,
+											reviewCount == 1 ? "" : "s");
+								} else {
+									System.out.println(" (No reviews yet)");
+								}
+
+								System.out.printf("   ID: %d | Price: $%.2f | Stock: %d%n", product.getProductId(),
+										product.getPrice(), product.getStock());
+								System.out.println();
+
+								count++;
+								if (!commonProducts.last()) {
+									commonProducts.findNext();
+								} else {
+									break;
+								}
+							}
+
+							System.out.printf("Found %d common highly rated product%s%n", count - 1,
+									(count - 1) == 1 ? "" : "s");
+						}
 
 						break;
 					case 7:
