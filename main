@@ -469,7 +469,44 @@ public class Main {
 					choice4 = scanner.nextInt();
 
 					switch (choice4) {
-					case 1:
+					case 1:  // Place an Order
+
+    system.displayAvailableProducts();
+
+
+    System.out.print("\nEnter Order ID: ");
+    int orderId = scanner.nextInt();
+
+    System.out.print("Enter Customer ID: ");
+    int customerId = scanner.nextInt();
+
+  
+    LinkedList<Product> selectedProducts = new LinkedList<>();
+    String more;
+    do {
+        System.out.print("Enter Product ID to add to order: ");
+        int productId = scanner.nextInt();
+        Product selected = system.searchProductById(productId);
+        if (selected != null && selected.getStock() > 0) {
+            selectedProducts.insert(selected);
+            System.out.println("Product added.");
+        } else {
+            System.out.println("Product not found or out of stock.");
+        }
+        System.out.print("Add another product? (yes/no): ");
+        more = scanner.next().toLowerCase();
+    } while (more.equals("yes"));
+
+    System.out.print("Enter Order Date (yyyy-MM-dd): ");
+    String orderDate = scanner.next();
+
+  
+    Order newOrder = system.createOrder(orderId, customerId, selectedProducts, orderDate);
+    if (newOrder != null) {
+        System.out.println(" Order placed successfully!");
+    } else {
+        System.out.println(" Failed to place order.");
+    }
 
 						break;
 					case 2:
