@@ -455,7 +455,8 @@ public class Main {
 			case 3:
 				int choice4;
 
-				do {
+				
+do {
 					System.out.println("\n- Order Menu -");
 					System.out.println("1. Place an Order");
 					System.out.println("2. Cancel Order");
@@ -468,8 +469,10 @@ public class Main {
 
 					choice4 = scanner.nextInt();
 
-					switch (choice4) {
-					case 1:  // Place an Order
+					
+switch (choice4) {
+					
+case 1:  // Place an Order
 
     system.displayAvailableProducts();
 
@@ -509,19 +512,28 @@ public class Main {
     }
 
 						break;
-					case 2:
+					
+case 2: // Cancel Order
+    System.out.print("Enter Order ID to cancel: ");
+    int cancelId = scanner.nextInt();
+    amazon.cancelOrder(cancelId);
+    break;
+
+					
+					
+case 3:
 
 						break;
-					case 3:
+					
+case 4:
 
 						break;
-					case 4:
+					
+case 5:
 
 						break;
-					case 5:
-
-						break;
-					case 6:
+					
+case 6:
 						System.out.println("Returning to main menu...");
 						break;
 					default:
