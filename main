@@ -471,11 +471,11 @@ do {
 
 					
 switch (choice4) {
-					
-case 1:  // Place an Order
+			
+    case 1: // Place an Order
 
-    system.displayAvailableProducts();
-
+    System.out.println("\nAvailable Products:");
+    system.displayAvailableProducts(); 
 
     System.out.print("\nEnter Order ID: ");
     int orderId = scanner.nextInt();
@@ -483,7 +483,6 @@ case 1:  // Place an Order
     System.out.print("Enter Customer ID: ");
     int customerId = scanner.nextInt();
 
-  
     LinkedList<Product> selectedProducts = new LinkedList<>();
     String more;
     do {
@@ -503,15 +502,33 @@ case 1:  // Place an Order
     System.out.print("Enter Order Date (yyyy-MM-dd): ");
     String orderDate = scanner.next();
 
-  
     Order newOrder = system.createOrder(orderId, customerId, selectedProducts, orderDate);
     if (newOrder != null) {
         System.out.println(" Order placed successfully!");
+        System.out.println("Order Summary:");
+        System.out.println("Order ID: " + newOrder.getOrderId());
+        System.out.println("Customer: " + newOrder.getCustomer().getName());
+        System.out.println("Date: " + newOrder.getOrderDate());
+        System.out.println("Status: " + newOrder.getStatus());
+        System.out.println("Total Price: $" + newOrder.getTotalPrice());
+        System.out.println("Products:");
+        LinkedList<Product> prods = newOrder.getProducts();
+        if (!prods.empty()) {
+            prods.findFirst();
+            while (!prods.last()) {
+                Product p = prods.retrieve();
+                System.out.println("- " + p.getName() + " ($" + p.getPrice() + ")");
+                prods.findNext();
+            }
+            Product last = prods.retrieve();
+            System.out.println("- " + last.getName() + " ($" + last.getPrice() + ")");
+        }
     } else {
         System.out.println(" Failed to place order.");
     }
+    break;
 
-						break;
+				
 					
 case 2: // Cancel Order
     System.out.print("Enter Order ID to cancel: ");
