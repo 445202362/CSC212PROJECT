@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class EcommerceSystem {
 	private LinkedList<Product> products;
 	private LinkedList<Customer> customers;
@@ -117,6 +121,27 @@ public class EcommerceSystem {
     
       System.out.println("Review with ID " + reviewId + " not found!");
 }
+
+
+// (4) get review
+public Review getReview(int customerId, int productId) {
+    if (reviews.empty()) return null;
+    
+    reviews.findFirst();
+    while (reviews.retrieve() != null) {
+        Review review = reviews.retrieve();
+        if (review.getCustomer().getCustomerId() == customerId && 
+            review.getProduct().getProductId() == productId) {
+            return review;
+        }
+        if (!reviews.last()) {
+            reviews.findNext();
+        } else {
+            break;
+        }
+    }
+    return null;
+}
 																										//==END OF REVIEW OPERATIONS==
 
 
@@ -124,7 +149,7 @@ public class EcommerceSystem {
 
 																										//== 	CUSTOMER OPERATIONS	==
 																										
-// (4) Search a customer id
+// (5) Search a customer id
     public Customer searchCustomerById(int customerId) {
     customers.findFirst();
     while (!customers.last()) {
@@ -143,7 +168,7 @@ public class EcommerceSystem {
 
 
 
-// (5) Register customer
+// (6) Register customer
     public Customer registerCustomer(int customerId, String name, String email) {
     // Check if customer already exists
     if (!customers.empty()) {
@@ -174,7 +199,7 @@ public class EcommerceSystem {
 
 
 																										//== 	PRODUCT OPERATIONS	==
-// (6) get common 5 star reviews
+// (7) get common 5 star reviews
 	public LinkedList<Product> getCommonHighlyRatedProducts(int custId1, int custId2) {
 		LinkedList<Product> common = new LinkedList<>();
 
@@ -289,7 +314,7 @@ public class EcommerceSystem {
 
 
 
-// (7) top three products by rating
+// (8) top three products by rating
 	public LinkedList<Product> getTop3Products() {
 		Product first = null, second = null, third = null;
 		double r1 = -1, r2 = -1, r3 = -1;
@@ -355,7 +380,7 @@ public class EcommerceSystem {
 
 
 
-// (8) track out of stock products
+// (9) track out of stock products
 	public LinkedList<Product> trackOutOfStockProducts() {
 		LinkedList<Product> outOfStock = new LinkedList<>();
 		products.findFirst();
@@ -378,7 +403,7 @@ public class EcommerceSystem {
 
 
 
-// (9) add product
+// (10) add product
 	public void addProduct(Product product) {
 		products.insert(product);
 	}
@@ -388,7 +413,7 @@ public class EcommerceSystem {
 
 
 
-// (10) remove product
+// (11) remove product
 	public boolean removeProduct(int productId) {
 		products.findFirst();
 		while (!products.last()) {
@@ -414,7 +439,7 @@ public class EcommerceSystem {
 
 
 
-// (11) update a product
+// (12) update a product
 	public void updateProduct(int productId, String name, double price, int stock) {
 		Product product = searchProductById(productId);
 		if (product != null) {
@@ -429,7 +454,7 @@ public class EcommerceSystem {
 
 
 
-// (12) Search a product id
+// (13) Search a product id
     public Product searchProductById(int productId) {
 		products.findFirst();
 		while (!products.last()) {
@@ -448,7 +473,7 @@ public class EcommerceSystem {
 
 
 
-// (13) Search product name
+// (14) Search product name
     public Product searchProductByName(String name) {
 		products.findFirst();
 		while (!products.last()) {
@@ -467,7 +492,7 @@ public class EcommerceSystem {
 
 
 
-// (14) product average rating by id
+// (15) product average rating by id
     public double getAverageRating(int productId) {
 		Product product = searchProductById(productId);
 		return (product != null) ? product.getAverageRating() : 0.0;
@@ -478,7 +503,7 @@ public class EcommerceSystem {
 
 
 
-// (15) Display all products that are in stock 
+// (16) Display all products that are in stock 
     public void displayAvailableProducts() {
 	    if (products.empty()) {
 	        System.out.println(" No products available in the system.");
@@ -517,7 +542,7 @@ public class EcommerceSystem {
 																										//== 	ORDER OPERATIONS	==
 																							
 																									
-// (16) Create order 
+// (17) Create order 
     public Order createOrder(int orderId , int customerId , LinkedList<Product> products , String orderDate){
     Customer customer = searchCustomerById(customerId);
     if (customer == null) {
@@ -546,7 +571,7 @@ public class EcommerceSystem {
 
 
 
-// (17) Cancel order 
+// (18) Cancel order 
     public void cancelOrder(int orderId) {
     if (orders.empty()) {
         System.out.println("No orders found!");
@@ -579,7 +604,7 @@ public class EcommerceSystem {
 
 
 
-// (18) Update order 
+// (19) Update order 
     public void updateOrderStatus(int orderId, String newStatus) {
     if (orders.empty()) {
         System.out.println("No orders found!");
@@ -612,7 +637,7 @@ public class EcommerceSystem {
 
 
 
-// (19) Search an order id
+// (20) Search an order id
 	public Order searchOrderById(int orderId) {
     orders.findFirst();
     while (!orders.last()) {
@@ -630,7 +655,7 @@ public class EcommerceSystem {
 
 
 
-// (20) Get all orders between two dates
+// (21) Get all orders between two dates
       public LinkedList<Order> getAllOrdersBetweenDates(String startDate, String endDate) {
       LinkedList<Order> ordersInRange = new LinkedList<>();
     
@@ -794,5 +819,3 @@ public class EcommerceSystem {
 	}
     
 }
-
-
