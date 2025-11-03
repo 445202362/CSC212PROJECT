@@ -551,13 +551,59 @@ case 3: // Update Order Status
 
 						
 					
-case 4:
+case 4: // Search Order by ID
+    System.out.print("Enter Order ID to search: ");
+    int searchId = scanner.nextInt();
 
-						break;
+    Order foundOrder = amazon.searchOrderById(searchId);
+    if (foundOrder != null) {
+        System.out.println("\nOrder Found:");
+        System.out.println("Order ID: " + foundOrder.getOrderId());
+        System.out.println("Customer: " + foundOrder.getCustomer().getName());
+        System.out.println("Date: " + foundOrder.getOrderDate());
+        System.out.println("Status: " + foundOrder.getStatus());
+        System.out.println("Total Price: $" + foundOrder.getTotalPrice());
+        System.out.println("Products:");
+        LinkedList<Product> prods = foundOrder.getProducts();
+        if (!prods.empty()) {
+            prods.findFirst();
+            while (!prods.last()) {
+                Product p = prods.retrieve();
+                System.out.println("- " + p.getName() + " ($" + p.getPrice() + ")");
+                prods.findNext();
+            }
+            Product last = prods.retrieve();
+            System.out.println("- " + last.getName() + " ($" + last.getPrice() + ")");
+        }
+    } else {
+        System.out.println("Order not found.");
+    }
+    break;
+						
 					
-case 5:
 
-						break;
+case 5: // Display All Orders Between Two Dates
+    System.out.print("Enter start date (yyyy-MM-dd): ");
+    String startDate = scanner.next();
+    System.out.print("Enter end date (yyyy-MM-dd): ");
+    String endDate = scanner.next();
+
+    LinkedList<Order> ordersInRange = amazon.getAllOrdersBetweenDates(startDate, endDate);
+    if (!ordersInRange.empty()) {
+        System.out.println("\nOrders between " + startDate + " and " + endDate + ":");
+        ordersInRange.findFirst();
+        while (!ordersInRange.last()) {
+            Order o = ordersInRange.retrieve();
+            System.out.println("Order ID: " + o.getOrderId() + " | Date: " + o.getOrderDate() + " | Status: " + o.getStatus() + " | Total: $" + o.getTotalPrice());
+            ordersInRange.findNext();
+        }
+        Order last = ordersInRange.retrieve();
+        System.out.println("Order ID: " + last.getOrderId() + " | Date: " + last.getOrderDate() + " | Status: " + last.getStatus() + " | Total: $" + last.getTotalPrice());
+    } else {
+        System.out.println("No orders found in this range.");
+    }
+    break;
+						
 					
 case 6:
 						System.out.println("Returning to main menu...");
