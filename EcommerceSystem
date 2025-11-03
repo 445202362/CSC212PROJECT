@@ -475,17 +475,27 @@ public Review getReview(int customerId, int productId) {
 
 // (14) Search product name
     public Product searchProductByName(String name) {
-		products.findFirst();
-		while (!products.last()) {
-			Product product = products.retrieve();
-			if (product.getName().equalsIgnoreCase(name)) {
-				return product;
-			}
-			products.findNext();
-		}
-		Product product = products.retrieve();
-		return (product.getName().equalsIgnoreCase(name)) ? product : null;
-	}
+    if (products.empty()) {
+        return null;
+    }
+    
+    products.findFirst();
+    while (!products.last()) {
+        Product product = products.retrieve();
+        if (product.getName().equalsIgnoreCase(name)) {
+            return product;
+        }
+        products.findNext();
+    }
+    
+    // check the last element
+    Product lastProduct = products.retrieve();
+    if (lastProduct.getName().equalsIgnoreCase(name)) {
+        return lastProduct;
+    }
+    
+    return null;
+}
 
 
 
