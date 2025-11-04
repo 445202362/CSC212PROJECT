@@ -516,33 +516,56 @@ public Review getReview(int customerId, int productId) {
 // (16) Display all products that are in stock 
     public void displayAvailableProducts() {
 	    if (products.empty()) {
-	        System.out.println(" No products available in the system.");
+	        System.out.println("No products available in the system.");
 	        return;
 	    }
-	    
-	    System.out.println("\n AVAILABLE PRODUCTS (In Stock):");
-	    System.out.println("┌─────┬────────────────────────────────────┬────────────┬───────┐");
-	    System.out.println("│ ID  │ Product Name                       │ Price      │ Stock │");
-	    System.out.println("├─────┼────────────────────────────────────┼────────────┼───────┤");
-	    
+
+	    System.out.println("\n" + "=".repeat(70));
+	    System.out.println("               AVAILABLE PRODUCTS (In Stock)");
+	    System.out.println("=".repeat(70));
+	    System.out.printf("%-6s%12s    %8s   %-30s\n", "ID", "Price", "Stock", "Product Name");
+	    System.out.println("-".repeat(70));
+
+	    boolean found = false;
+
 	    products.findFirst();
 	    while (!products.last()) {
 	        Product p = products.retrieve();
 	        if (p.getStock() > 0) {
-	            System.out.printf("│ %-3d │ %-34s │ $%-9.2f │ %-5d │%n",
-	                p.getProductId(), p.getName(), p.getPrice(), p.getStock());
+	            found = true;
+	            String productName = p.getName();
+	            // Truncate if longer than 30 characters
+	            if (productName.length() > 30) {
+	                productName = productName.substring(0, 27) + "...";
+	            }
+	            System.out.printf("%-6d%12.2f%8d   %-30s\n", 
+	                p.getProductId(), 
+	                p.getPrice(),
+	                p.getStock(),
+	                productName);
 	        }
 	        products.findNext();
 	    }
-	    
-	    // Check last product
+
 	    Product last = products.retrieve();
 	    if (last.getStock() > 0) {
-	        System.out.printf("│ %-3d │ %-34s │ $%-9.2f │ %-5d │%n",
-	            last.getProductId(), last.getName(), last.getPrice(), last.getStock());
+	        found = true;
+	        String productName = last.getName();
+	        if (productName.length() > 30) {
+	            productName = productName.substring(0, 27) + "...";
+	        }
+	        System.out.printf("%-6d%12.2f%8d   %-30s\n", 
+	            last.getProductId(), 
+	            last.getPrice(),
+	            last.getStock(),
+	            productName);
 	    }
-	    
-	    System.out.println("└─────┴────────────────────────────────────┴────────────┴───────┘");
+
+	    System.out.println("=".repeat(70));
+
+	    if (!found) {
+	        System.out.println("No available products found");
+	    }
 	}
 
 
