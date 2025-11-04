@@ -316,66 +316,65 @@ public Review getReview(int customerId, int productId) {
 
 // (8) top three products by rating
 	public LinkedList<Product> getTop3Products() {
-		Product first = null, second = null, third = null;
-		double r1 = -1, r2 = -1, r3 = -1;
+	    Product first = null, second = null, third = null;
+	    double r1 = -1, r2 = -1, r3 = -1;
 
-		if (!products.empty()) {
-			products.findFirst();
-			while (!products.last()) {
-				Product product = products.retrieve();
-				double rating = product.getAverageRating();
+	    if (!products.empty()) {
+	        products.findFirst();
+	        while (!products.last()) {
+	            Product product = products.retrieve();
+	            double rating = product.getAverageRating();
 
-				if (rating > r1) {
-					third = second;
-					r3 = r2;
-					second = first;
-					r2 = r1;
-					first = product;
-					r1 = rating;
-				} else if (rating > r2) {
-					third = second;
-					r3 = r2;
-					second = product;
-					r2 = rating;
-				} else if (rating > r3) {
-					third = product;
-					r3 = rating;
-				}
+	            // Handle equal ratings by replacing (first-come basis)
+	            if (rating >= r1) {  // Changed to >= to handle ties better
+	                third = second;
+	                r3 = r2;
+	                second = first;
+	                r2 = r1;
+	                first = product;
+	                r1 = rating;
+	            } else if (rating >= r2) {
+	                third = second;
+	                r3 = r2;
+	                second = product;
+	                r2 = rating;
+	            } else if (rating >= r3) {
+	                third = product;
+	                r3 = rating;
+	            }
 
-				products.findNext();
-			}
-			// last element
-			Product lastProduct = products.retrieve();
-			double lastRating = lastProduct.getAverageRating();
-			if (lastRating > r1) {
-				third = second;
-				r3 = r2;
-				second = first;
-				r2 = r1;
-				first = lastProduct;
-				r1 = lastRating;
-			} else if (lastRating > r2) {
-				third = second;
-				r3 = r2;
-				second = lastProduct;
-				r2 = lastRating;
-			} else if (lastRating > r3) {
-				third = lastProduct;
-				r3 = lastRating;
-			}
-		}
+	            products.findNext();
+	        }
+	        
+	        // Handle last product
+	        Product lastProduct = products.retrieve();
+	        double lastRating = lastProduct.getAverageRating();
+	        if (lastRating >= r1) {
+	            third = second;
+	            r3 = r2;
+	            second = first;
+	            r2 = r1;
+	            first = lastProduct;
+	            r1 = lastRating;
+	        } else if (lastRating >= r2) {
+	            third = second;
+	            r3 = r2;
+	            second = lastProduct;
+	            r2 = lastRating;
+	        } else if (lastRating >= r3) {
+	            third = lastProduct;
+	            r3 = lastRating;
+	        }
+	    }
 
-		LinkedList<Product> result = new LinkedList<>();
-		if (first != null)
-			result.insert(first);
-		if (second != null)
-			result.insert(second);
-		if (third != null)
-			result.insert(third);
-
-		return result;
+	    LinkedList<Product> result = new LinkedList<>();
+	    // Insert in correct order (first, second, third)
+	    if (third != null) result.insert(third);
+	    if (second != null) result.insert(second);
+	    if (first != null) result.insert(first);
+	    
+	    return result;
 	}
-
 
 
 
