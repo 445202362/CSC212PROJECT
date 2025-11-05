@@ -201,115 +201,71 @@ public Review getReview(int customerId, int productId) {
 																										//== 	PRODUCT OPERATIONS	==
 // (7) get common 5 star reviews
 	public LinkedList<Product> getCommonHighlyRatedProducts(int custId1, int custId2) {
-		LinkedList<Product> common = new LinkedList<>();
+        LinkedList<Product> common = new LinkedList<>();
 
-		if (reviews.empty())
-			return common;
+        if (reviews.empty())
+            return common;
 
-		// First product IDs that customer 1 loved
-		LinkedList<Integer> cust1Loves = new LinkedList<>();
+        // Collect 5-star product IDs for customer 1
+        LinkedList<Integer> cust1Loves = new LinkedList<>();
 
-		reviews.findFirst();
-		while (!reviews.last()) {
-			Review r = reviews.retrieve();
-			if (r.getCustomer().getCustomerId() == custId1 && r.getRating() > 4) {
-				cust1Loves.insert(r.getProduct().getProductId());
-			}
-			reviews.findNext();
-		}
-		Review last = reviews.retrieve();
-		if (last.getCustomer().getCustomerId() == custId1 && last.getRating() > 4) {
-			cust1Loves.insert(last.getProduct().getProductId());
-		}
+        // Use do-while to ensure we process all elements
+        reviews.findFirst();
+        do {
+            Review r = reviews.retrieve();
+            if (r.getCustomer().getCustomerId() == custId1 && r.getRating() == 5) {
+                cust1Loves.insert(r.getProduct().getProductId());
+            }
+            if (reviews.last()) break;
+            reviews.findNext();
+        } while (true);
 
-		// Find matches in customer 2
-		reviews.findFirst();
-		while (!reviews.last()) {
-			Review r = reviews.retrieve();
-			if (r.getCustomer().getCustomerId() == custId2 && r.getRating() > 4) {
-				int productId = r.getProduct().getProductId();
+        // Find matches in customer 2
+        reviews.findFirst();
+        do {
+            Review r = reviews.retrieve();
+            if (r.getCustomer().getCustomerId() == custId2 && r.getRating() == 5) {
+                int productId = r.getProduct().getProductId();
 
-				// Check if customer 1 also loved this product
-				boolean cust1AlsoLoves = false;
-				if (!cust1Loves.empty()) {
-					cust1Loves.findFirst();
-					while (!cust1Loves.last()) {
-						if (cust1Loves.retrieve() == productId) {
-							cust1AlsoLoves = true;
-							break;
-						}
-						cust1Loves.findNext();
-					}
-					if (cust1Loves.retrieve() == productId) {
-						cust1AlsoLoves = true;
-					}
-				}
+                // Check if customer 1 also loved this product
+                // RESET cursor each time!
+                boolean cust1AlsoLoves = false;
+                if (!cust1Loves.empty()) {
+                    cust1Loves.findFirst();  // RESET to beginning!
+                    do {
+                        if (cust1Loves.retrieve() == productId) {
+                            cust1AlsoLoves = true;
+                            break;
+                        }
+                        if (cust1Loves.last()) break;
+                        cust1Loves.findNext();
+                    } while (true);
+                }
 
-				// Check if we already added this product
-				boolean alreadyAdded = false;
-				if (!common.empty()) {
-					common.findFirst();
-					while (!common.last()) {
-						if (common.retrieve().getProductId() == productId) {
-							alreadyAdded = true;
-							break;
-						}
-						common.findNext();
-					}
-					if (common.retrieve().getProductId() == productId) {
-						alreadyAdded = true;
-					}
-				}
+                // Check if already added (also reset cursor each time)
+                boolean alreadyAdded = false;
+                if (!common.empty()) {
+                    common.findFirst();  // RESET to beginning!
+                    do {
+                        if (common.retrieve().getProductId() == productId) {
+                            alreadyAdded = true;
+                            break;
+                        }
+                        if (common.last()) break;
+                        common.findNext();
+                    } while (true);
+                }
 
-				if (cust1AlsoLoves && !alreadyAdded) {
-					common.insert(r.getProduct());
-				}
-			}
-			reviews.findNext();
-		}
+                if (cust1AlsoLoves && !alreadyAdded) {
+                    common.insert(r.getProduct());
+                }
+            }
+            if (reviews.last()) break;
+            reviews.findNext();
+        } while (true);
 
-		// Check last review for customer 2
-		if (last.getCustomer().getCustomerId() == custId2 && last.getRating() > 4) {
-			int productId = last.getProduct().getProductId();
-
-			boolean cust1AlsoLoves = false;
-			if (!cust1Loves.empty()) {
-				cust1Loves.findFirst();
-				while (!cust1Loves.last()) {
-					if (cust1Loves.retrieve() == productId) {
-						cust1AlsoLoves = true;
-						break;
-					}
-					cust1Loves.findNext();
-				}
-				if (cust1Loves.retrieve() == productId) {
-					cust1AlsoLoves = true;
-				}
-			}
-
-			boolean alreadyAdded = false;
-			if (!common.empty()) {
-				common.findFirst();
-				while (!common.last()) {
-					if (common.retrieve().getProductId() == productId) {
-						alreadyAdded = true;
-						break;
-					}
-					common.findNext();
-				}
-				if (common.retrieve().getProductId() == productId) {
-					alreadyAdded = true;
-				}
-			}
-
-			if (cust1AlsoLoves && !alreadyAdded) {
-				common.insert(last.getProduct());
-			}
-		}
-
-		return common;
-	}
-
+        return common;
+    }
 
 
 
