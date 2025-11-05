@@ -183,46 +183,41 @@ public class Main {
 						int custId2 = scanner.nextInt();
 						scanner.nextLine();
 
+						// Input validation
+						if (custId1 < 0 || custId2 < 0) {
+						    System.out.println("Error: Customer IDs cannot be negative.");
+						    return;
+						}
+
 						// Call your method that returns LinkedList<Product>
 						LinkedList<Product> commonProducts = amazon.getCommonHighlyRatedProducts(custId1, custId2);
 
 						if (commonProducts.empty()) {
-							System.out.println(
-									" No common highly rated products (rating > 4) found between these customers.");
+						    System.out.println("No common 5-star products found between these customers.");
 						} else {
-							System.out.println("\n COMMON HIGHLY RATED PRODUCTS (Rating > 4):");
-							commonProducts.findFirst();
-							int count = 1;
+						    System.out.println("\nCOMMON 5-STAR PRODUCTS:");
+						    commonProducts.findFirst();
+						    int count = 1;
 
-							while (commonProducts.retrieve() != null) {
-								Product product = commonProducts.retrieve();
-								double avgRating = product.getAverageRating();
-								int reviewCount = product.getReviews().size();
+						    // Safer loop condition
+						    while (true) {
+						        Product product = commonProducts.retrieve();
 
-								System.out.printf("%d. %s%n", count, product.getName());
-								System.out.printf("   Rating: %.2f/5.0", avgRating);
+						        System.out.printf("%d. %s%n", count, product.getName());
+						        System.out.println("   Both customers rated: 5.0/5.0 ⭐");
+						        System.out.printf("   ID: %d | Price: $%.2f | Stock: %d%n", 
+						                product.getProductId(), product.getPrice(), product.getStock());
+						        System.out.println();
 
-								if (reviewCount > 0) {
-									System.out.printf(" (Based on %d review%s)%n", reviewCount,
-											reviewCount == 1 ? "" : "s");
-								} else {
-									System.out.println(" (No reviews yet)");
-								}
+						        count++;
+						        
+						        // Break condition at the start of potential next iteration
+						        if (commonProducts.last()) break;
+						        commonProducts.findNext();
+						    }
 
-								System.out.printf("   ID: %d | Price: $%.2f | Stock: %d%n", product.getProductId(),
-										product.getPrice(), product.getStock());
-								System.out.println();
-
-								count++;
-								if (!commonProducts.last()) {
-									commonProducts.findNext();
-								} else {
-									break;
-								}
-							}
-
-							System.out.printf("Found %d common highly rated product%s%n", count - 1,
-									(count - 1) == 1 ? "" : "s");
+						    System.out.printf("Found %d common 5-star product%s%n", count - 1,
+						            (count - 1) == 1 ? "" : "s");
 						}
 
 						break;
