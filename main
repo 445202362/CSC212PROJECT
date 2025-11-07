@@ -112,24 +112,83 @@ public class Main {
 						scanner.nextLine();
 
 						if (searchMethod == 1) {
-							System.out.print("Enter product ID: ");
-							int searchId = scanner.nextInt();
-							scanner.nextLine();
-							Product foundProduct = amazon.searchProductById(searchId);
-							if (foundProduct != null) {
-								System.out.println(" Product Found:");
-								System.out.printf("ID: %d | Name: %s | Price: $%.2f | Stock: %d%n",
-										foundProduct.getProductId(), foundProduct.getName(), foundProduct.getPrice(),
-										foundProduct.getStock());
-							} else {
-								System.out.println(" Product not found with ID: " + searchId);
-							}
+						    // Search by ID
+						    System.out.print("Enter product ID: ");
+						    
+						    if (!scanner.hasNextInt()) {
+						        System.out.println("Error: Please enter a valid numeric ID!");
+						        scanner.nextLine();
+						        break;
+						    }
+						    
+						    int searchId = scanner.nextInt();
+						    scanner.nextLine();
+						    
+						    if (searchId <= 0) {
+						        System.out.println("Error: Product ID must be a positive number!");
+						        break;
+						    }
+						    
+						    Product foundProduct = amazon.searchProductById(searchId);
+						    if (foundProduct != null) {
+						        System.out.println("\nProduct Found:");
+						        System.out.println("ID: " + foundProduct.getProductId());
+						        System.out.println("Name: " + foundProduct.getName());
+						        System.out.println("Price: $" + foundProduct.getPrice());
+						        System.out.println("Stock: " + foundProduct.getStock());
+						        
+						        // Simple rating display
+						        double avgRating = foundProduct.getAverageRating();
+						        if (avgRating > 0) {
+						            System.out.println("Rating: " + avgRating + "/5.0");
+						        }
+						        
+						        // Simple stock status
+						        if (foundProduct.getStock() > 0) {
+						            System.out.println("Status: In Stock");
+						        } else {
+						            System.out.println("Status: Out of Stock");
+						        }
+						        
+						    } else {
+						        System.out.println("Product not found with ID: " + searchId);
+						    }
+						    
 						} else if (searchMethod == 2) {
-							System.out.print("Enter product name: ");
-							String searchName = scanner.nextLine();
-							amazon.searchProductByName(searchName);
+						    // Search by Name
+						    System.out.print("Enter product name: ");
+						    String searchName = scanner.nextLine().trim();
+						    
+						    if (searchName.isEmpty()) {
+						        System.out.println("Error: Product name cannot be empty!");
+						        break;
+						    }
+						    
+						    Product p = amazon.searchProductByName(searchName);
+						    if (p != null) {
+						        System.out.println("\nProduct Found:");
+						        System.out.println("ID: " + p.getProductId());
+						        System.out.println("Name: " + p.getName());
+						        System.out.println("Price: $" + p.getPrice());
+						        System.out.println("Stock: " + p.getStock());
+						        
+						        double avgRating = p.getAverageRating();
+						        if (avgRating > 0) {
+						            System.out.println("Rating: " + avgRating + "/5.0");
+						        }
+						        
+						        if (p.getStock() > 0) {
+						            System.out.println("Status: In Stock");
+						        } else {
+						            System.out.println("Status: Out of Stock");
+						        }
+						        
+						    } else {
+						        System.out.println("Product not found with name: '" + searchName + "'");
+						    }
+						    
 						} else {
-							System.out.println(" Invalid choice!");
+						    System.out.println("Invalid choice! Please enter 1 or 2.");
 						}
 
 						break;
