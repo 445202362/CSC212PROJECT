@@ -610,6 +610,8 @@ case 6:
 				} while (choice4 != 6);
 				break;
 			case 4:
+				System.out.println("Saving data before exit...");
+				    amazon.saveAllData();
 				System.out.println("Goodbye!");
 				break;
 			default:
